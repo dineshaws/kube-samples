@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: liveness-readiness-app
+spec:
+  selector:
+    matchLabels:
+      app: liveness-readiness
+  template:
+    metadata:
+      labels:
+        app: liveness-readiness
+    spec:
+      containers:
+        - name: liveness-readiness
+          image: nginx
+          resources:
+            limits:
+              memory: "128Mi"
+              cpu: "500m"
+          ports:
+            - containerPort: 80
+              name: app-port
+          livenessProbe:
+            httpGet:
+              path: /
+              port: app-port
+            initialDelaySeconds: 10
+            timeoutSeconds: 30
+          readinessProbe:
+            httpGet:
+              path: /
+              port: app-port
+            initialDelaySeconds: 10
+            timeoutSeconds: 30

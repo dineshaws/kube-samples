@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: node-selector-app
+spec:
+  selector:
+    matchLabels:
+      app: node-selector
+  template:
+    metadata:
+      labels:
+        app: node-selector
+    spec:
+      containers:
+        - name: node-selector
+          image: nginx
+          resources:
+            limits:
+              memory: "128Mi"
+              cpu: "500m"
+          ports:
+            - containerPort: 80
+      nodeSelector:
+        hardware: local-system
+  replicas: 2

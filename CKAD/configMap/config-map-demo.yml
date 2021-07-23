@@ -1,0 +1,30 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: cm-demo
+  labels:
+    name: mycm-demoapp
+spec:
+  containers:
+  - name: k8s-demo
+    image: wardviaene/k8s-demo
+    resources:
+      limits:
+        memory: "128Mi"
+        cpu: "500m"
+    ports:
+      - name: node-port 
+        containerPort: 3000
+    volumeMounts:
+      - name: config-volume
+        mountPath: /etc/config
+    env:
+      - name: DRIVER
+        valueFrom:
+          configMapKeyRef:
+            key: driver
+            name: app-config
+  volumes:
+    - name: config-volume
+      configMap:
+        name: app-config

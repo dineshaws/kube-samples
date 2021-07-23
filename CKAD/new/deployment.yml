@@ -1,24 +1,26 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: node-selector-app
+  name: deployment-app
+  labels:
+    app: demo-app-label
 spec:
+  replicas: 2
   selector:
     matchLabels:
-      app: node-selector
+      app: demo-app
   template:
     metadata:
+      name: nginx-app
       labels:
-        app: node-selector
+        app: demo-app
     spec:
       containers:
-        - name: node-selector
+        - name: demo-app-port
           image: nginx
+          ports:
+            - containerPort: 80
           resources:
             limits:
               memory: "128Mi"
               cpu: "500m"
-          ports:
-            - containerPort: 80
-      nodeSelector:
-        hardware: local-system

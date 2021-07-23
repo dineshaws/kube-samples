@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: lifecycle-demo
+spec:
+  selector:
+    matchLabels:
+      app: lifecycle-app
+  template:
+    metadata:
+      labels:
+        app: lifecycle-app
+    spec:
+      containers:
+      - name: lifecycle-container
+        image: nginx
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 80
+        readinessProbe:
+          exec:
+            command: ['sh', '-c', 'echo $(date +%s): "readinessProbe" >> /demo.txt']
+        livenessProbe:
+          exec:
+            command: ['sh', '-c', 'echo $(date +%s): "livenessProbe" >> /demo.txt']
+        lifecycle:
+          postStart:
+            exec:
+              command: ['sh', '-c', 'echo $(date +%s): "postStart" >> /demo.txt']
+          preStop:
+            exec:
+              command: ['sh', '-c', 'echo $(date +%s): "preStop" >> /demo.txt']
+            

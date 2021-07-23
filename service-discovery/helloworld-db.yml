@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: helloworld-deployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: helloworld-db
+  template:
+    metadata:
+      labels:
+        app: helloworld-db
+    spec:
+      containers:
+      - name: k8s-demo
+        image: wardviaene/k8s-demo
+        command: ["node", "index-db.js"]
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        ports:
+        - name: nodejs-port
+          containerPort: 3000
+        env:
+          - name: MYSQL_HOST
+            value: db-service
+          - name: MYSQL_ROOT_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                key: rootPassword
+                name: helloworld-secrets
+          - name: MYSQL_USER
+            valueFrom:
+              secretKeyRef:
+                key: username
+                name: helloworld-secrets
+          - name: MYSQL_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                key: password
+                name: helloworld-secrets
+          - name: MYSQL_DATABASE
+            valueFrom:
+              secretKeyRef:
+                key: database
+                name: helloworld-secrets
+

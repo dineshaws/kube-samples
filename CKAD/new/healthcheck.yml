@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: healthcheck-deployment
+spec:
+  selector:
+    matchLabels:
+      app: healthcheck-label
+  template:
+    metadata:
+      labels:
+        app: healthcheck-label
+    spec:
+      containers:
+      - name: healthcheck-container
+        image: nginx
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 80
+          name: nginx-port
+        readinessProbe:
+          httpGet:
+            path: /
+            port: nginx-port
+          initialDelaySeconds: 15
+          timeoutSeconds: 30
